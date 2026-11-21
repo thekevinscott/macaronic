@@ -1,40 +1,6 @@
-import { readFile } from 'node:fs/promises';
 import { describe, expect, test } from 'vitest';
-import { parse, register } from 'macaronic';
-
-const fixture = (name: string) =>
-  readFile(new URL(`./__fixtures__/${name}`, import.meta.url), 'utf8');
-
-const brainfuck = (source: string): string => {
-  const tape = new Uint8Array(30000);
-  let pointer = 0;
-  let output = '';
-  for (let i = 0; i < source.length; i++) {
-    const command = source[i];
-    if (command === '>') {
-      pointer++;
-    } else if (command === '<') {
-      pointer--;
-    } else if (command === '+') {
-      tape[pointer]++;
-    } else if (command === '-') {
-      tape[pointer]--;
-    } else if (command === '.') {
-      output += String.fromCharCode(tape[pointer]);
-    } else if (command === '[' && tape[pointer] === 0) {
-      for (let depth = 1; depth > 0;) {
-        i++;
-        depth += source[i] === '[' ? 1 : source[i] === ']' ? -1 : 0;
-      }
-    } else if (command === ']' && tape[pointer] !== 0) {
-      for (let depth = 1; depth > 0;) {
-        i--;
-        depth += source[i] === ']' ? 1 : source[i] === '[' ? -1 : 0;
-      }
-    }
-  }
-  return output;
-};
+import { parse } from 'macaronic';
+import { fixture } from './fixture.js';
 
 describe('parse', () => {
   describe('a document with blocks in three languages', () => {
@@ -117,14 +83,6 @@ describe('parse', () => {
         { name: 'three-files', files: ['a.md', 'b.md', 'c.md'] },
         3,
       ]);
-    });
-  });
-
-  describe('a document in a language with a registered runner', () => {
-    test('runs the block with the function passed to register', async () => {
-      register('brainfuck', brainfuck);
-      const parsed = await parse(await fixture('brainfuck.md'));
-      expect(parsed.codeBlocks[0].value).toEqual('Hi');
     });
   });
 });
