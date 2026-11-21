@@ -21,7 +21,3 @@ jobs:
       id-token: write
     with:
       release_packages: ${{ inputs.release_packages }}
-    secrets:
-      # npm Trusted Publishing binds to an already-published package, so the
-      # first publish needs a token. Drop once a Trusted Publisher is registered.
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
