@@ -1,0 +1,16 @@
+name: Release config check
+
+on:
+  pull_request:
+    paths:
+      - 'putitoutthere.toml'
+      - 'packages/node/package.json'
+      - '.github/workflows/release.yml'
+      - '.github/workflows/check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  putitoutthere-check:
+    uses: thekevinscott/putitoutthere/.github/workflows/check.yml@v0

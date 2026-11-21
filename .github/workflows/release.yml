@@ -1,0 +1,27 @@
+name: Release
+
+# Manual only: no push trigger, so nothing publishes without a dispatch.
+on:
+  workflow_dispatch:
+    inputs:
+      release_packages:
+        description: 'name[@bump|version], e.g. macaronic, macaronic@minor, macaronic@0.1.0'
+        required: true
+        default: macaronic
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    uses: thekevinscott/putitoutthere/.github/workflows/release.yml@v0
+    permissions:
+      contents: write
+      id-token: write
+    with:
+      release_packages: ${{ inputs.release_packages }}
+    secrets:
+      # npm Trusted Publishing binds to an already-published package, so the
+      # first publish needs a token. Drop once a Trusted Publisher is registered.
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,0 +1,9 @@
+[putitoutthere]
+version = 1
+
+[[package]]
+name = "macaronic"
+kind = "npm"
+path = "packages/node"
+first_version = "0.0.1"
+globs = ["packages/node/**", "LICENSE"]

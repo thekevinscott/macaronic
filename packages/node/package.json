@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "description": "A processor for documents that hold code blocks in several languages.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thekevinscott/macaronic.git",
+    "directory": "packages/node"
+  },
   "type": "module",
   "exports": {
     ".": {
