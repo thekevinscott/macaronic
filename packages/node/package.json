@@ -34,6 +34,7 @@
   "dependencies": {
     "mdast-util-from-markdown": "^2.1.0",
     "pyodide": "^314.0.8",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "yaml": "^2.9.1"
   }
 }

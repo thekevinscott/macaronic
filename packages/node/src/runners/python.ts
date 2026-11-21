@@ -26,8 +26,9 @@ export const python: Runner = async (content, variables) => {
   const globals = pyodide.toPy(
     Object.fromEntries(Object.entries(variables).map(([name, value]) => [PREFIX + name, value])),
   ) as unknown;
-  const result: unknown = await pyodide.runPythonAsync(content.replace(/\$(\w+)/g, `${PREFIX}$1`), {
-    globals: globals as never,
-  });
+  const source = content.replace(/\$(\w+)/g, (match, name: string) =>
+    name in variables ? PREFIX + name : match,
+  );
+  const result: unknown = await pyodide.runPythonAsync(source, { globals: globals as never });
   return isConvertible(result) ? result.toJs({ dict_converter: Object.fromEntries }) : result;
 };

@@ -43,4 +43,49 @@ describe('parse', () => {
       ]);
     });
   });
+
+  describe('a document whose second block uses a plain variable from the first', () => {
+    test('rejects in Python, because each block runs on its own', async () => {
+      await expect(parse(await fixture('isolated-python.md'))).rejects.toThrow(
+        "name 'count' is not defined",
+      );
+    });
+
+    test('rejects in JavaScript, because each block runs on its own', async () => {
+      await expect(parse(await fixture('isolated-javascript.md'))).rejects.toThrow(
+        'count is not defined',
+      );
+    });
+  });
+
+  describe('a document with a code block nothing can run', () => {
+    test('rejects a block with no language, naming its line', async () => {
+      await expect(parse(await fixture('no-language.md'))).rejects.toThrow(
+        'No runner for the unlabeled code block on line 5',
+      );
+    });
+
+    test('rejects a block in an unknown language, naming the language and its line', async () => {
+      await expect(parse(await fixture('unknown-language.md'))).rejects.toThrow(
+        'No runner for the cobol code block on line 5',
+      );
+    });
+  });
+
+  describe('a Python string holding a dollar sign that names no block', () => {
+    test('leaves the string as written', async () => {
+      const parsed = await parse(await fixture('dollar-in-string.md'));
+      expect(parsed.codeBlocks[0].value).toEqual('costs $five');
+    });
+  });
+
+  describe('a document with a YAML block', () => {
+    test('parses the block as data and offers it to later blocks by name', async () => {
+      const parsed = await parse(await fixture('yaml.md'));
+      expect(parsed.codeBlocks.map((block) => block.value)).toEqual([
+        { name: 'three-files', files: ['a.md', 'b.md', 'c.md'] },
+        3,
+      ]);
+    });
+  });
 });
